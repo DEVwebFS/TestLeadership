@@ -7,11 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1; /* Indigo vibrant */
+            --primary: #6366f1;
             --primary-dark: #4f46e5;
-            --secondary: #ec4899; /* Pink pour les accents */
+            --secondary: #ec4899;
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-            --glass: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
@@ -30,281 +29,155 @@
             overflow-x: hidden;
         }
 
-        /* Effet de lumières en arrière-plan */
-        body::before {
-            content: '';
+        .lang-switcher {
             position: absolute;
-            width: 300px; height: 300px;
-            background: var(--primary);
-            filter: blur(150px);
-            opacity: 0.15;
-            top: 10%; left: 10%;
-            z-index: -1;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            z-index: 100;
         }
 
-        .container { 
-            width: 95%; 
-            max-width: 600px; 
-            perspective: 1000px;
-        }
+        .container { width: 95%; max-width: 600px; }
 
         .card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             padding: 40px;
             border-radius: 32px;
             text-align: center;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
             border: 1px solid var(--glass-border);
-            animation: slideUp 0.6s ease-out;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        h1.logo { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sub-logo { color: var(--text-muted); letter-spacing: 4px; font-size: 0.65rem; margin-bottom: 30px; text-transform: uppercase; }
 
-        h1.logo {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #818cf8, #f472b6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0;
-            letter-spacing: -2px;
-        }
-
-        .sub-logo {
-            color: var(--text-muted);
-            letter-spacing: 4px;
-            font-size: 0.65rem;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; }
-
-        .info-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            padding: 25px;
-            border-radius: 20px;
-            text-align: left;
-            margin: 25px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .info-box::after {
-            content: '';
-            position: absolute;
-            left: 0; top: 0; height: 100%; width: 4px;
-            background: var(--primary);
-        }
-
-        .progress-container {
-            background: rgba(255, 255, 255, 0.05);
-            height: 8px;
-            border-radius: 10px;
-            margin-bottom: 35px;
-            border: 1px solid var(--glass-border);
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-        }
+        .progress-container { background: rgba(255, 255, 255, 0.05); height: 8px; border-radius: 10px; margin-bottom: 35px; }
+        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--secondary)); height: 100%; border-radius: 10px; transition: 0.4s ease; width: 0%; }
 
         .option-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            padding: 20px;
+            padding: 18px;
             width: 100%;
             border-radius: 16px;
-            margin-bottom: 15px;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 1rem;
-            color: var(--text-main);
-        }
-
-        .option-btn:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(5px);
-            border-color: var(--primary);
-        }
-
-        .option-btn.selected {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: white;
-            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
-        }
-
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
-        
-        .btn-nav {
-            padding: 14px 28px;
-            border-radius: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-            border: none;
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .btn-prev { background: transparent; color: var(--text-muted); border: 1px solid var(--glass-border); }
-        .btn-prev:hover { background: rgba(255, 255, 255, 0.05); color: white; }
-
-        .btn-next {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            flex-grow: 1;
-            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
-        }
-        .btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4); }
-        .btn-next:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-
-        /* Score & Stats */
-        .score-big {
-            font-size: 5rem;
-            font-weight: 800;
-            margin: 15px 0;
-            background: linear-gradient(to bottom, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .stats-box {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 24px;
-            padding: 25px;
-            margin: 25px 0;
-            border: 1px solid var(--glass-border);
-        }
-
-        .stat-row { margin-bottom: 20px; text-align: left; }
-        .stat-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
-        .stat-bar-bg { background: rgba(255, 255, 255, 0.05); height: 6px; border-radius: 10px; overflow: hidden; }
-        .stat-bar-fill { background: var(--primary); height: 100%; }
-
-        .box-info {
-            padding: 18px;
-            border-radius: 16px;
-            text-align: left;
             margin-bottom: 12px;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            text-align: left;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: 0.3s;
         }
+        .option-btn.selected { background: var(--primary); border-color: var(--primary); }
+
+        .btn-nav { padding: 14px 28px; border-radius: 14px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; }
+        .btn-next { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; flex-grow: 1; }
+        
+        .rtl { direction: rtl; text-align: right; }
+        .rtl .option-btn { text-align: right; }
+
+        .score-big { font-size: 5rem; font-weight: 800; margin: 15px 0; color: white; }
+        .stats-box { background: rgba(0, 0, 0, 0.2); border-radius: 24px; padding: 25px; margin: 25px 0; }
+        .stat-row { margin-bottom: 15px; text-align: left; }
+        .stat-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; }
+        .stat-bar-bg { background: rgba(255, 255, 255, 0.05); height: 6px; border-radius: 10px; }
+        .stat-bar-fill { background: var(--primary); height: 100%; width: 50%; }
+        .box-info { padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 10px; font-size: 0.85rem; }
         .box-green { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
         .box-orange { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.2); }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .card { padding: 25px; }
-            h1.logo { font-size: 2.2rem; }
-        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    
+    <select class="lang-switcher" onchange="changeLang(this.value)">
+        <option value="fr">Français</option>
+        <option value="ar">العربية</option>
+        <option value="en">English</option>
+    </select>
+
+<div class="container" id="main-container">
     <div id="home-card" class="card">
         <h1 class="logo">TSL</h1>
-        <p class="sub-logo">Rapport de Leadership</p>
-        <h2>Prêt pour l'analyse?</h2>
-
-        <div class="info-box">
-            <b style="font-size: 1rem; color: white;">Protocole d'évaluation</b>
-            <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--text-muted); margin-top: 15px; line-height: 1.8;">
-                <li>Répondez avec votre instinct naturel.</li>
-                <li>L'évaluation dure environ 2 minutes.</li>
-                <li>Accédez à votre profil de leader complet.</li>
-            </ul>
-        </div>
-        <button class="btn-nav btn-next" style="width: 100%; padding: 22px;" onclick="startTest()">Commencer l'expérience</button>
+        <p class="sub-logo" id="text-sub-logo">Rapport de Leadership</p>
+        <h2 id="text-home-title">Analyse de Style</h2><br>
+        <p style="color: var(--text-muted); margin-bottom: 25px;" id="text-home-desc">Évaluez votre profil de leader à travers 16 situations simples.</p>
+        <button class="btn-nav btn-next" style="width: 100%; padding: 22px;" id="text-start-btn" onclick="startTest()">Commencer</button>
     </div>
 
     <div id="quiz-card" class="card" style="display: none;">
-        <h1 class="logo">TSL</h1>
-        <p class="sub-logo">Test de Leadership</p>
         <div class="progress-container"><div id="progress" class="progress-fill"></div></div>
-        <p id="q-number" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; letter-spacing: 1px;"></p>
-        <h2 id="q-text" style="margin: 25px 0 35px 0; line-height: 1.4;"></h2>
+        <p id="q-number" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 10px;"></p>
+        <h2 id="q-text" style="margin-bottom: 30px;"></h2>
         <div id="options"></div>
-        <div class="nav-buttons">
-            <button id="prev-btn" class="btn-nav btn-prev" onclick="changeQuestion(-1)">Retour</button>
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <button id="prev-btn" class="btn-nav" style="background: transparent; color: white; border: 1px solid var(--glass-border);" onclick="changeQuestion(-1)">Retour</button>
             <button id="next-btn" class="btn-nav btn-next" onclick="changeQuestion(1)" disabled>Suivant</button>
-            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Calculer mes résultats</button>
+            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Résultats</button>
         </div>
     </div>
 
     <div id="result-card" class="card" style="display: none;">
         <h1 class="logo">TSL</h1>
         <p class="sub-logo">Rapport Final</p>
-        <div class="score-big">38%</div>
-        <p style="color: var(--primary); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Leadership Global</p>
+        <div class="score-big">100%</div>
+        <p id="text-global-lead" style="color: var(--primary); font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">Leadership Global</p>
         
         <div class="stats-box">
-            <div class="stat-row">
-                <div class="stat-info"><span>Intelligence Sociale</span><span>25%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 25%"></div></div>
-            </div>
-            <div class="stat-row">
-                <div class="stat-info"><span>Vision Stratégique</span><span>25%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 25%"></div></div>
-            </div>
-            <div class="stat-row">
-                <div class="stat-info"><span>Prise de Décision</span><span>50%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
-            </div>
-            <div class="stat-row">
-                <div class="stat-info"><span>Organisation</span><span>50%</span></div>
-                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
-            </div>
+            <div class="stat-row"><div class="stat-info"><span class="t-social">Social</span><span>80%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill"></div></div></div>
+            <div class="stat-row"><div class="stat-info"><span class="t-vision">Vision</span><span>70%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill"></div></div></div>
         </div>
 
-        <div class="box-info box-green"><b>✅ POINT FORT</b><br>Excellent sens de l'empathie et gestion de l'humain.</div>
-        <div class="box-info box-orange"><b>🚀 AXE D'AMÉLIORATION</b><br>Osez prendre plus de place dans les débats publics.</div>
+        <div class="box-info box-green" id="text-point-fort"><b>✅ POINT FORT</b><br>Communication claire et efficace.</div>
+        <div class="box-info box-orange" id="text-axe-amelio"><b>🚀 AMÉLIORATION</b><br>Prendre plus d'initiatives.</div>
         
-        <div class="nav-buttons">
-            <button class="btn-nav btn-prev" style="flex: 1;" onclick="location.reload()">Reset</button>
-            <button class="btn-nav btn-next" style="background: white; color: black;">PDF REPORT</button>
-        </div>
+        <button class="btn-nav btn-next" style="width: 100%;" onclick="location.reload()">Reset</button>
     </div>
-
 </div>
 
 <script>
-    // LE JAVASCRIPT RESTE LE MÊME QUE TON CODE INITIAL POUR GARDER LA LOGIQUE
-    const questions = [
-        { q: "Face à un conflit d'équipe, vous :", options: ["Cherchez un compromis immédiat", "Analysez les faits avant d'agir"] },
-        { q: "Pour motiver vos troupes, vous misez sur :", options: ["L'inspiration et la vision", "Les objectifs et primes"] },
-        { q: "Votre priorité le matin :", options: ["Saluer tout le monde", "Vérifier la To-Do list"] },
-        { q: "Une décision urgente doit être prise :", options: ["Vous tranchez seul vite", "Vous consultez l'équipe"] },
-        { q: "En cas d'échec d'un projet :", options: ["Vous assumez la responsabilité", "Vous cherchez la cause technique"] },
-        { q: "Votre bureau est généralement :", options: ["Parfaitement rangé", "Un désordre créatif"] },
-        { q: "Pendant une réunion :", options: ["Vous écoutez beaucoup", "Vous menez le débat"] },
-        { q: "Nouveau projet inconnu :", options: ["Vous foncez et apprenez", "Vous planifiez chaque étape"] },
-        { q: "Un employé fait une erreur :", options: ["Vous le coachez en privé", "Vous rappelez les règles"] },
-        { q: "La vision à 5 ans pour vous est :", options: ["Indispensable", "Un peu floue mais on avance"] },
-        { q: "Le feedback des autres est :", options: ["Un cadeau précieux", "Utile mais secondaire"] },
-        { q: "Face au changement :", options: ["Vous l'adoptez vite", "Vous l'étudiez avec prudence"] },
-        { q: "Votre force principale :", options: ["La rigueur", "L'empathie"] },
-        { q: "Pour déléguer, vous :", options: ["Donnez une liberté totale", "Suivez de très près"] },
-        { q: "Le succès c'est :", options: ["Atteindre les chiffres", "Voir l'équipe grandir"] },
-        { q: "En public, vous êtes :", options: ["Très à l'aise", "Plutôt réservé"] }
+    let currentLang = 'fr';
+    let currentIdx = 0;
+    let answers = new Array(16).fill(null);
+
+    const uiTexts = {
+        fr: { sub: "Rapport de Leadership", title: "Analyse de Style", desc: "16 situations simples.", start: "Commencer", prev: "Retour", next: "Suivant", res: "Résultats", global: "Leadership Global", social: "Social", vision: "Vision", fort: "<b>✅ POINT FORT</b><br>Communication claire.", axe: "<b>🚀 AMÉLIORATION</b><br>Prendre des initiatives." },
+        ar: { sub: "تقرير القيادة", title: "تحليل الأسلوب", desc: "16 موقفاً بسيطاً.", start: "ابدأ", prev: "رجوع", next: "التالي", res: "النتائج", global: "القيادة العامة", social: "اجتماعي", vision: "رؤية", fort: "<b>✅ نقطة قوة</b><br>تواصل واضح.", axe: "<b>🚀 تحسين</b><br>المبادرة أكثر." },
+        en: { sub: "Leadership Report", title: "Style Analysis", desc: "16 simple situations.", start: "Start", prev: "Back", next: "Next", res: "Results", global: "Global Leadership", social: "Social", vision: "Vision", fort: "<b>✅ STRENGTH</b><br>Clear communication.", axe: "<b>🚀 IMPROVEMENT</b><br>Take initiatives." }
+    };
+
+    const questionsData = [
+        { fr: { q: "Comment donnez-vous des ordres ?", options: ["Directement", "En discutant"] }, ar: { q: "كيف تعطي الأوامر؟", options: ["مباشرة", "بالنقاش"] }, en: { q: "How do you give orders?", options: ["Directly", "By discussing"] } },
+        { fr: { q: "Un problème arrive, vous :", options: ["Décidez seul", "Demandez l'avis"] }, ar: { q: "حدثت مشكلة، أنت:", options: ["تقرر وحدك", "تطلب الرأي"] }, en: { q: "A problem occurs, you:", options: ["Decide alone", "Ask for advice"] } },
+        { fr: { q: "Votre priorité est :", options: ["Le travail fini", "L'ambiance d'équipe"] }, ar: { q: "أولويتك هي:", options: ["إنجاز العمل", "جو الفريق"] }, en: { q: "Your priority is:", options: ["Work finished", "Team atmosphere"] } },
+        { fr: { q: "Pour motiver quelqu'un :", options: ["Vous le contrôlez", "Vous l'encouragez"] }, ar: { q: "لتحفيز شخص ما:", options: ["تراقبه", "تشجعه"] }, en: { q: "To motivate someone:", options: ["You control them", "You encourage them"] } },
+        { fr: { q: "Réunion d'équipe :", options: ["Vous parlez", "Vous écoutez"] }, ar: { q: "اجتماع الفريق:", options: ["تتحدث", "تستمع"] }, en: { q: "Team meeting:", options: ["You speak", "You listen"] } },
+        { fr: { q: "Erreur d'un employé :", options: ["Sanctionner", "Expliquer"] }, ar: { q: "خطأ موظف:", options: ["عقوبة", "شرح"] }, en: { q: "Employee error:", options: ["Sanction", "Explain"] } },
+        { fr: { q: "Changement de plan :", options: ["L'imposer", "En parler avant"] }, ar: { q: "تغيير الخطة:", options: ["فرضها", "التحدث عنها"] }, en: { q: "Plan change:", options: ["Impose it", "Talk about it"] } },
+        { fr: { q: "Nouveau projet :", options: ["Tout vérifier", "Faire confiance"] }, ar: { q: "مشروع جديد:", options: ["فحص كل شيء", "الثقة"] }, en: { q: "New project:", options: ["Check everything", "Trust"] } },
+        { fr: { q: "Les objectifs :", options: ["Fixes et clairs", "Souples"] }, ar: { q: "الأهداف:", options: ["ثابتة وواضحة", "مرنة"] }, en: { q: "The goals:", options: ["Fixed and clear", "Flexible"] } },
+        { fr: { q: "Le leader idéal :", options: ["Un chef", "Un guide"] }, ar: { q: "القائد المثالي:", options: ["رئيس", "مرشد"] }, en: { q: "Ideal leader:", options: ["A boss", "A guide"] } },
+        { fr: { q: "Conflit entre deux personnes :", options: ["Trancher", "Médiation"] }, ar: { q: "صراع بين شخصين:", options: ["الحسم", "الوساطة"] }, en: { q: "Conflict between two:", options: ["Settle it", "Mediation"] } },
+        { fr: { q: "Feedback (avis) :", options: ["Direct", "Constructif"] }, ar: { q: "ملاحظات:", options: ["مباشرة", "بناءة"] }, en: { q: "Feedback:", options: ["Direct", "Constructive"] } },
+        { fr: { q: "Déléguer :", options: ["C'est dur", "C'est utile"] }, ar: { q: "التفويض:", options: ["صعب", "مفيد"] }, en: { q: "Delegating:", options: ["It's hard", "It's useful"] } },
+        { fr: { q: "Innovation :", options: ["Risqué", "Nécessaire"] }, ar: { q: "الابتكار:", options: ["خطر", "ضروري"] }, en: { q: "Innovation:", options: ["Risky", "Necessary"] } },
+        { fr: { q: "La discipline :", options: ["Sévère", "Juste"] }, ar: { q: "الانضباط:", options: ["صارم", "عادل"] }, en: { q: "Discipline:", options: ["Severe", "Fair"] } },
+        { fr: { q: "L'équipe :", options: ["Des exécutants", "Des partenaires"] }, ar: { q: "الفريق:", options: ["منفذون", "شركاء"] }, en: { q: "The team:", options: ["Executors", "Partners"] } }
     ];
 
-    let currentIdx = 0;
-    let answers = new Array(questions.length).fill(null);
+    function changeLang(lang) {
+        currentLang = lang;
+        const cont = document.getElementById('main-container');
+        if(lang === 'ar') cont.classList.add('rtl'); else cont.classList.remove('rtl');
+        document.getElementById('text-sub-logo').innerText = uiTexts[lang].sub;
+        document.getElementById('text-home-title').innerText = uiTexts[lang].title;
+        document.getElementById('text-home-desc').innerText = uiTexts[lang].desc;
+        document.getElementById('text-start-btn').innerText = uiTexts[lang].start;
+        if(document.getElementById('quiz-card').style.display === 'block') render();
+    }
 
     function startTest() {
         document.getElementById('home-card').style.display = 'none';
@@ -313,33 +186,28 @@
     }
 
     function render() {
-        const q = questions[currentIdx];
-        document.getElementById('q-number').innerText = `QUESTION ${currentIdx + 1} / 16`;
-        document.getElementById('q-text').innerText = q.q;
+        const qData = questionsData[currentIdx][currentLang];
+        document.getElementById('q-number').innerText = (currentLang === 'ar' ? 'السؤال' : 'QUESTION') + ` ${currentIdx + 1} / 16`;
+        document.getElementById('q-text').innerText = qData.q;
         const optContainer = document.getElementById('options');
         optContainer.innerHTML = '';
-        
-        q.options.forEach((opt, i) => {
+        qData.options.forEach((opt, i) => {
             const btn = document.createElement('button');
             btn.className = `option-btn ${answers[currentIdx] === i ? 'selected' : ''}`;
             btn.innerText = opt;
             btn.onclick = () => { answers[currentIdx] = i; render(); };
             optContainer.appendChild(btn);
         });
-
         document.getElementById('progress').style.width = ((currentIdx + 1) / 16 * 100) + '%';
-        document.getElementById('prev-btn').style.visibility = currentIdx > 0 ? 'visible' : 'hidden';
-        const isLast = currentIdx === questions.length - 1;
-        document.getElementById('next-btn').style.display = isLast ? 'none' : 'block';
-        document.getElementById('result-btn').style.display = isLast ? 'block' : 'none';
+        const isLast = currentIdx === 15;
+        document.getElementById('next-btn').style.display = isLast ? 'none' : 'inline-block';
+        document.getElementById('result-btn').style.display = isLast ? 'inline-block' : 'none';
         document.getElementById('next-btn').disabled = answers[currentIdx] === null;
+        document.getElementById('next-btn').innerText = uiTexts[currentLang].next;
+        document.getElementById('result-btn').innerText = uiTexts[currentLang].res;
     }
 
-    function changeQuestion(dir) {
-        currentIdx += dir;
-        render();
-    }
-
+    function changeQuestion(dir) { currentIdx += dir; render(); }
     function finish() {
         document.getElementById('quiz-card').style.display = 'none';
         document.getElementById('result-card').style.display = 'block';
