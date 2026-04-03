@@ -3,68 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TSL - Test de Leadership</title>
+    <title>TSL - Experience Leadership</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #f8faff;
-            --primary-blue: #2563eb;
-            --dark-blue: #0f172a;
-            --text-gray: #64748b;
+            --primary: #6366f1; /* Indigo vibrant */
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899; /* Pink pour les accents */
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg-body);
-            color: var(--dark-blue);
-            font-family: 'Inter', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; margin: 0;
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        .container { width: 90%; max-width: 550px; }
+        /* Effet de lumières en arrière-plan */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: var(--primary);
+            filter: blur(150px);
+            opacity: 0.15;
+            top: 10%; left: 10%;
+            z-index: -1;
+        }
+
+        .container { 
+            width: 95%; 
+            max-width: 600px; 
+            perspective: 1000px;
+        }
 
         .card {
-            background: white; padding: 40px; border-radius: 24px;
-            text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 40px;
+            border-radius: 32px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            animation: slideUp 0.6s ease-out;
         }
 
-        h1.logo { color: var(--primary-blue); font-size: 2.5rem; margin: 0; font-weight: 800; }
-        .sub-logo { color: #94a3b8; letter-spacing: 2px; font-size: 0.7rem; margin-bottom: 25px; text-transform: uppercase; }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1.logo {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0;
+            letter-spacing: -2px;
+        }
+
+        .sub-logo {
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            font-size: 0.65rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        h2 { font-size: 1.5rem; margin-bottom: 20px; font-weight: 700; }
 
         .info-box {
-            background: #fcfdfe; border: 1px solid #f1f5f9; padding: 25px;
-            border-radius: 15px; text-align: left; margin: 20px 0;
-            border-left: 4px solid var(--primary-blue);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            padding: 25px;
+            border-radius: 20px;
+            text-align: left;
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .progress-container { background: #f1f5f9; height: 6px; border-radius: 10px; margin-bottom: 30px; }
-        .progress-fill { background: var(--primary-blue); height: 100%; width: 0%; transition: 0.4s; }
+        .info-box::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; height: 100%; width: 4px;
+            background: var(--primary);
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.05);
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 35px;
+            border: 1px solid var(--glass-border);
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+        }
 
         .option-btn {
-            background: white; border: 1px solid #e2e8f0; padding: 18px;
-            width: 100%; border-radius: 12px; margin-bottom: 12px;
-            text-align: left; cursor: pointer; transition: 0.2s; font-size: 1rem;
-            color: var(--dark-blue);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            width: 100%;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
+            color: var(--text-main);
         }
-        .option-btn:hover { border-color: var(--primary-blue); background: #f0f7ff; }
-        .option-btn.selected { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
 
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 10px; }
-        .btn-nav { padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; border: none; font-size: 0.9rem; }
-        .btn-prev { background: #f1f5f9; color: var(--text-gray); }
-        .btn-next { background: var(--primary-blue); color: white; flex-grow: 1; }
-        .btn-next:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .option-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+            border-color: var(--primary);
+        }
 
-        /* Results */
-        .score-big { font-size: 4rem; font-weight: 800; margin: 10px 0; }
-        .stats-box { background: #fcfdfe; border: 1px solid #f1f5f9; border-radius: 20px; padding: 20px; margin: 25px 0; }
-        .stat-row { margin-bottom: 15px; text-align: left; }
-        .stat-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
-        .stat-bar-bg { background: #f1f5f9; height: 8px; border-radius: 4px; overflow: hidden; }
-        .stat-bar-fill { background: var(--primary-blue); height: 100%; width: 0%; transition: 1s ease-out; }
+        .option-btn.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.5);
+        }
 
-        .box-info { padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 10px; font-size: 0.85rem; }
-        .box-green { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
-        .box-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 15px; }
+        
+        .btn-nav {
+            padding: 14px 28px;
+            border-radius: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-prev { background: transparent; color: var(--text-muted); border: 1px solid var(--glass-border); }
+        .btn-prev:hover { background: rgba(255, 255, 255, 0.05); color: white; }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            flex-grow: 1;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3);
+        }
+        .btn-next:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(79, 70, 229, 0.4); }
+        .btn-next:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+
+        /* Score & Stats */
+        .score-big {
+            font-size: 5rem;
+            font-weight: 800;
+            margin: 15px 0;
+            background: linear-gradient(to bottom, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stats-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 24px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 1px solid var(--glass-border);
+        }
+
+        .stat-row { margin-bottom: 20px; text-align: left; }
+        .stat-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+        .stat-bar-bg { background: rgba(255, 255, 255, 0.05); height: 6px; border-radius: 10px; overflow: hidden; }
+        .stat-bar-fill { background: var(--primary); height: 100%; }
+
+        .box-info {
+            padding: 18px;
+            border-radius: 16px;
+            text-align: left;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        .box-green { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .box-orange { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.2); }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card { padding: 25px; }
+            h1.logo { font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -74,30 +219,30 @@
     <div id="home-card" class="card">
         <h1 class="logo">TSL</h1>
         <p class="sub-logo">Rapport de Leadership</p>
-        <h2>Bienvenue!</h2>
+        <h2>Prêt pour l'analyse?</h2>
 
         <div class="info-box">
-            <b style="font-size: 0.9rem;">Comment ça fonctionne?</b>
-            <ul style="padding-left: 20px; font-size: 0.85rem; color: #475569; margin-top: 10px;">
-                <li>Répondez à chaque question en fonction de votre préférence naturelle.</li>
-                <li>Il n'y a pas de bonnes ou mauvaises réponses.</li>
-                <li>À la fin, vous découvrirez votre profil détaillé.</li>
+            <b style="font-size: 1rem; color: white;">Protocole d'évaluation</b>
+            <ul style="padding-left: 20px; font-size: 0.9rem; color: var(--text-muted); margin-top: 15px; line-height: 1.8;">
+                <li>Répondez avec votre instinct naturel.</li>
+                <li>L'évaluation dure environ 2 minutes.</li>
+                <li>Accédez à votre profil de leader complet.</li>
             </ul>
         </div>
-        <button class="btn-nav btn-next" style="width: 100%; padding: 18px;" onclick="startTest()">Commencer le test</button>
+        <button class="btn-nav btn-next" style="width: 100%; padding: 22px;" onclick="startTest()">Commencer l'expérience</button>
     </div>
 
     <div id="quiz-card" class="card" style="display: none;">
         <h1 class="logo">TSL</h1>
         <p class="sub-logo">Test de Leadership</p>
         <div class="progress-container"><div id="progress" class="progress-fill"></div></div>
-        <p id="q-number" style="font-size: 0.75rem; color: var(--text-gray); font-weight: bold;"></p>
-        <h2 id="q-text" style="margin: 20px 0 30px 0; font-size: 1.2rem;"></h2>
+        <p id="q-number" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; letter-spacing: 1px;"></p>
+        <h2 id="q-text" style="margin: 25px 0 35px 0; line-height: 1.4;"></h2>
         <div id="options"></div>
         <div class="nav-buttons">
-            <button id="prev-btn" class="btn-nav btn-prev" onclick="changeQuestion(-1)">← Précédent</button>
-            <button id="next-btn" class="btn-nav btn-next" onclick="changeQuestion(1)" disabled>Suivant →</button>
-            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Voir les résultats</button>
+            <button id="prev-btn" class="btn-nav btn-prev" onclick="changeQuestion(-1)">Retour</button>
+            <button id="next-btn" class="btn-nav btn-next" onclick="changeQuestion(1)" disabled>Suivant</button>
+            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Calculer mes résultats</button>
         </div>
     </div>
 
@@ -105,7 +250,8 @@
         <h1 class="logo">TSL</h1>
         <p class="sub-logo">Rapport Final</p>
         <div class="score-big">38%</div>
-        <p style="color: #94a3b8; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Indice de leadership global</p>
+        <p style="color: var(--primary); font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;">Leadership Global</p>
+        
         <div class="stats-box">
             <div class="stat-row">
                 <div class="stat-info"><span>Intelligence Sociale</span><span>25%</span></div>
@@ -120,21 +266,24 @@
                 <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
             </div>
             <div class="stat-row">
-                <div class="stat-info"><span>Organisation & Rigueur</span><span>50%</span></div>
+                <div class="stat-info"><span>Organisation</span><span>50%</span></div>
                 <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
             </div>
         </div>
-        <div class="box-info box-green"><b>✅ VOS AVANTAGES:</b><br>Excellent sens de l'empathie et gestion de l'humain.</div>
-        <div class="box-info box-orange"><b>🚀 AXES DE PROGRÈS:</b><br>Osez prendre plus de place dans les débats publics.</div>
+
+        <div class="box-info box-green"><b>✅ POINT FORT</b><br>Excellent sens de l'empathie et gestion de l'humain.</div>
+        <div class="box-info box-orange"><b>🚀 AXE D'AMÉLIORATION</b><br>Osez prendre plus de place dans les débats publics.</div>
+        
         <div class="nav-buttons">
-            <button class="btn-nav btn-prev" style="flex: 1;" onclick="location.reload()">RECOMMENCER</button>
-            <button class="btn-nav btn-next" style="background: var(--dark-blue);">TÉLÉCHARGER PDF</button>
+            <button class="btn-nav btn-prev" style="flex: 1;" onclick="location.reload()">Reset</button>
+            <button class="btn-nav btn-next" style="background: white; color: black;">PDF REPORT</button>
         </div>
     </div>
 
 </div>
 
 <script>
+    // LE JAVASCRIPT RESTE LE MÊME QUE TON CODE INITIAL POUR GARDER LA LOGIQUE
     const questions = [
         { q: "Face à un conflit d'équipe, vous :", options: ["Cherchez un compromis immédiat", "Analysez les faits avant d'agir"] },
         { q: "Pour motiver vos troupes, vous misez sur :", options: ["L'inspiration et la vision", "Les objectifs et primes"] },
