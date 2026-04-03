@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSL - Test de Leadership</title>
+    <style>
+        :root {
+            --bg-body: #f8faff;
+            --primary-blue: #2563eb;
+            --dark-blue: #0f172a;
+            --text-gray: #64748b;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--dark-blue);
+            font-family: 'Inter', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; margin: 0;
+        }
+
+        .container { width: 90%; max-width: 550px; }
+
+        .card {
+            background: white; padding: 40px; border-radius: 24px;
+            text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        h1.logo { color: var(--primary-blue); font-size: 2.5rem; margin: 0; font-weight: 800; }
+        .sub-logo { color: #94a3b8; letter-spacing: 2px; font-size: 0.7rem; margin-bottom: 25px; text-transform: uppercase; }
+
+        .info-box {
+            background: #fcfdfe; border: 1px solid #f1f5f9; padding: 25px;
+            border-radius: 15px; text-align: left; margin: 20px 0;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .progress-container { background: #f1f5f9; height: 6px; border-radius: 10px; margin-bottom: 30px; }
+        .progress-fill { background: var(--primary-blue); height: 100%; width: 0%; transition: 0.4s; }
+
+        .option-btn {
+            background: white; border: 1px solid #e2e8f0; padding: 18px;
+            width: 100%; border-radius: 12px; margin-bottom: 12px;
+            text-align: left; cursor: pointer; transition: 0.2s; font-size: 1rem;
+            color: var(--dark-blue);
+        }
+        .option-btn:hover { border-color: var(--primary-blue); background: #f0f7ff; }
+        .option-btn.selected { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; gap: 10px; }
+        .btn-nav { padding: 10px 20px; border-radius: 10px; font-weight: 600; cursor: pointer; transition: 0.3s; border: none; font-size: 0.9rem; }
+        .btn-prev { background: #f1f5f9; color: var(--text-gray); }
+        .btn-next { background: var(--primary-blue); color: white; flex-grow: 1; }
+        .btn-next:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        /* Results */
+        .score-big { font-size: 4rem; font-weight: 800; margin: 10px 0; }
+        .stats-box { background: #fcfdfe; border: 1px solid #f1f5f9; border-radius: 20px; padding: 20px; margin: 25px 0; }
+        .stat-row { margin-bottom: 15px; text-align: left; }
+        .stat-info { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; }
+        .stat-bar-bg { background: #f1f5f9; height: 8px; border-radius: 4px; overflow: hidden; }
+        .stat-bar-fill { background: var(--primary-blue); height: 100%; width: 0%; transition: 1s ease-out; }
+
+        .box-info { padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 10px; font-size: 0.85rem; }
+        .box-green { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
+        .box-orange { background: #fff7ed; color: #ea580c; border: 1px solid #ffedd5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div id="home-card" class="card">
+        <h1 class="logo">TSL</h1>
+        <p class="sub-logo">Rapport de Leadership</p>
+        <h2>Bienvenue!</h2>
+
+        <div class="info-box">
+            <b style="font-size: 0.9rem;">Comment ça fonctionne?</b>
+            <ul style="padding-left: 20px; font-size: 0.85rem; color: #475569; margin-top: 10px;">
+                <li>Répondez à chaque question en fonction de votre préférence naturelle.</li>
+                <li>Il n'y a pas de bonnes ou mauvaises réponses.</li>
+                <li>À la fin, vous découvrirez votre profil détaillé.</li>
+            </ul>
+        </div>
+        <button class="btn-nav btn-next" style="width: 100%; padding: 18px;" onclick="startTest()">Commencer le test</button>
+    </div>
+
+    <div id="quiz-card" class="card" style="display: none;">
+        <h1 class="logo">TSL</h1>
+        <p class="sub-logo">Test de Leadership</p>
+        <div class="progress-container"><div id="progress" class="progress-fill"></div></div>
+        <p id="q-number" style="font-size: 0.75rem; color: var(--text-gray); font-weight: bold;"></p>
+        <h2 id="q-text" style="margin: 20px 0 30px 0; font-size: 1.2rem;"></h2>
+        <div id="options"></div>
+        <div class="nav-buttons">
+            <button id="prev-btn" class="btn-nav btn-prev" onclick="changeQuestion(-1)">← Précédent</button>
+            <button id="next-btn" class="btn-nav btn-next" onclick="changeQuestion(1)" disabled>Suivant →</button>
+            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Voir les résultats</button>
+        </div>
+    </div>
+
+    <div id="result-card" class="card" style="display: none;">
+        <h1 class="logo">TSL</h1>
+        <p class="sub-logo">Rapport Final</p>
+        <div class="score-big">38%</div>
+        <p style="color: #94a3b8; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">Indice de leadership global</p>
+        <div class="stats-box">
+            <div class="stat-row">
+                <div class="stat-info"><span>Intelligence Sociale</span><span>25%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 25%"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-info"><span>Vision Stratégique</span><span>25%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 25%"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-info"><span>Prise de Décision</span><span>50%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-info"><span>Organisation & Rigueur</span><span>50%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 50%"></div></div>
+            </div>
+        </div>
+        <div class="box-info box-green"><b>✅ VOS AVANTAGES:</b><br>Excellent sens de l'empathie et gestion de l'humain.</div>
+        <div class="box-info box-orange"><b>🚀 AXES DE PROGRÈS:</b><br>Osez prendre plus de place dans les débats publics.</div>
+        <div class="nav-buttons">
+            <button class="btn-nav btn-prev" style="flex: 1;" onclick="location.reload()">RECOMMENCER</button>
+            <button class="btn-nav btn-next" style="background: var(--dark-blue);">TÉLÉCHARGER PDF</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const questions = [
+        { q: "Face à un conflit d'équipe, vous :", options: ["Cherchez un compromis immédiat", "Analysez les faits avant d'agir"] },
+        { q: "Pour motiver vos troupes, vous misez sur :", options: ["L'inspiration et la vision", "Les objectifs et primes"] },
+        { q: "Votre priorité le matin :", options: ["Saluer tout le monde", "Vérifier la To-Do list"] },
+        { q: "Une décision urgente doit être prise :", options: ["Vous tranchez seul vite", "Vous consultez l'équipe"] },
+        { q: "En cas d'échec d'un projet :", options: ["Vous assumez la responsabilité", "Vous cherchez la cause technique"] },
+        { q: "Votre bureau est généralement :", options: ["Parfaitement rangé", "Un désordre créatif"] },
+        { q: "Pendant une réunion :", options: ["Vous écoutez beaucoup", "Vous menez le débat"] },
+        { q: "Nouveau projet inconnu :", options: ["Vous foncez et apprenez", "Vous planifiez chaque étape"] },
+        { q: "Un employé fait une erreur :", options: ["Vous le coachez en privé", "Vous rappelez les règles"] },
+        { q: "La vision à 5 ans pour vous est :", options: ["Indispensable", "Un peu floue mais on avance"] },
+        { q: "Le feedback des autres est :", options: ["Un cadeau précieux", "Utile mais secondaire"] },
+        { q: "Face au changement :", options: ["Vous l'adoptez vite", "Vous l'étudiez avec prudence"] },
+        { q: "Votre force principale :", options: ["La rigueur", "L'empathie"] },
+        { q: "Pour déléguer, vous :", options: ["Donnez une liberté totale", "Suivez de très près"] },
+        { q: "Le succès c'est :", options: ["Atteindre les chiffres", "Voir l'équipe grandir"] },
+        { q: "En public, vous êtes :", options: ["Très à l'aise", "Plutôt réservé"] }
+    ];
+
+    let currentIdx = 0;
+    let answers = new Array(questions.length).fill(null);
+
+    function startTest() {
+        document.getElementById('home-card').style.display = 'none';
+        document.getElementById('quiz-card').style.display = 'block';
+        render();
+    }
+
+    function render() {
+        const q = questions[currentIdx];
+        document.getElementById('q-number').innerText = `QUESTION ${currentIdx + 1} / 16`;
+        document.getElementById('q-text').innerText = q.q;
+        const optContainer = document.getElementById('options');
+        optContainer.innerHTML = '';
+        
+        q.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = `option-btn ${answers[currentIdx] === i ? 'selected' : ''}`;
+            btn.innerText = opt;
+            btn.onclick = () => { answers[currentIdx] = i; render(); };
+            optContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress').style.width = ((currentIdx + 1) / 16 * 100) + '%';
+        document.getElementById('prev-btn').style.visibility = currentIdx > 0 ? 'visible' : 'hidden';
+        const isLast = currentIdx === questions.length - 1;
+        document.getElementById('next-btn').style.display = isLast ? 'none' : 'block';
+        document.getElementById('result-btn').style.display = isLast ? 'block' : 'none';
+        document.getElementById('next-btn').disabled = answers[currentIdx] === null;
+    }
+
+    function changeQuestion(dir) {
+        currentIdx += dir;
+        render();
+    }
+
+    function finish() {
+        document.getElementById('quiz-card').style.display = 'none';
+        document.getElementById('result-card').style.display = 'block';
+    }
+</script>
+</body>
+</html>
