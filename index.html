@@ -7,9 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --secondary: #ec4899;
+            --primary: #8b5cf6; /* Violet MBTI */
+            --primary-dark: #6d28d9;
             --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             --glass-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
@@ -26,69 +25,85 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            position: relative;
         }
 
+        /* --- Language Switcher --- */
         .lang-switcher {
-            position: absolute;
-            top: 20px;
-            right: 20px;
+            position: absolute; top: 20px; right: 20px;
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 12px;
-            cursor: pointer;
-            z-index: 100;
+            color: white; padding: 8px 12px; border-radius: 12px;
+            cursor: pointer; z-index: 100; font-family: inherit;
         }
 
-        .container { width: 95%; max-width: 600px; }
+        .container { width: 95%; max-width: 550px; }
 
         .card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(12px);
-            padding: 40px;
-            border-radius: 32px;
+            padding: 30px;
+            border-radius: 24px;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* --- Style Resultats Violet --- */
+        .result-header {
+            background: var(--primary);
+            padding: 25px;
+            border-radius: 16px;
+            margin: 20px 0;
+        }
+
+        .type-title { font-size: 3rem; font-weight: 800; letter-spacing: 4px; margin-bottom: 5px; }
+        .type-subtitle { font-size: 1rem; opacity: 0.9; }
+
+        .mbti-bar-container { margin: 12px 0; text-align: left; }
+        .mbti-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; font-weight: 600; }
+        .mbti-bar-bg { background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 10px; overflow: hidden; }
+        .mbti-bar-fill { background: #a78bfa; height: 100%; transition: 1s ease-out; }
+
+        .description-box {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            line-height: 1.5;
             border: 1px solid var(--glass-border);
         }
 
-        h1.logo { font-size: 3rem; font-weight: 800; background: linear-gradient(to right, #818cf8, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sub-logo { color: var(--text-muted); letter-spacing: 4px; font-size: 0.65rem; margin-bottom: 30px; text-transform: uppercase; }
-
-        .progress-container { background: rgba(255, 255, 255, 0.05); height: 8px; border-radius: 10px; margin-bottom: 35px; }
-        .progress-fill { background: linear-gradient(90deg, var(--primary), var(--secondary)); height: 100%; border-radius: 10px; transition: 0.4s ease; width: 0%; }
-
+        /* --- Buttons & UI --- */
         .option-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
-            padding: 18px;
+            padding: 15px;
             width: 100%;
-            border-radius: 16px;
-            margin-bottom: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
             text-align: left;
             cursor: pointer;
-            color: var(--text-main);
-            transition: 0.3s;
+            color: white;
+            transition: 0.2s;
         }
         .option-btn.selected { background: var(--primary); border-color: var(--primary); }
 
-        .btn-nav { padding: 14px 28px; border-radius: 14px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; }
-        .btn-next { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; flex-grow: 1; }
+        .btn-nav { 
+            padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; 
+            border: none; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-next { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
         
+        .progress-bar { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; margin-bottom: 20px; }
+        .progress-fill { background: var(--primary); height: 100%; width: 0%; border-radius: 10px; transition: 0.3s; }
+
         .rtl { direction: rtl; text-align: right; }
         .rtl .option-btn { text-align: right; }
+        .rtl .mbti-bar-container { text-align: right; }
 
-        .score-big { font-size: 5rem; font-weight: 800; margin: 15px 0; color: white; }
-        .stats-box { background: rgba(0, 0, 0, 0.2); border-radius: 24px; padding: 25px; margin: 25px 0; }
-        .stat-row { margin-bottom: 15px; text-align: left; }
-        .stat-info { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; }
-        .stat-bar-bg { background: rgba(255, 255, 255, 0.05); height: 6px; border-radius: 10px; }
-        .stat-bar-fill { background: var(--primary); height: 100%; width: 50%; }
-        .box-info { padding: 15px; border-radius: 12px; text-align: left; margin-bottom: 10px; font-size: 0.85rem; }
-        .box-green { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.2); }
-        .box-orange { background: rgba(249, 115, 22, 0.1); color: #fb923c; border: 1px solid rgba(249, 115, 22, 0.2); }
     </style>
 </head>
 <body>
@@ -101,82 +116,95 @@
 
 <div class="container" id="main-container">
     <div id="home-card" class="card">
-        <h1 class="logo">TSL</h1>
-        <p class="sub-logo" id="text-sub-logo">Rapport de Leadership</p>
-        <h2 id="text-home-title">Analyse de Style</h2><br>
-        <p style="color: var(--text-muted); margin-bottom: 25px;" id="text-home-desc">Évaluez votre profil de leader à travers 16 situations simples.</p>
-        <button class="btn-nav btn-next" style="width: 100%; padding: 22px;" id="text-start-btn" onclick="startTest()">Commencer</button>
+        <h2 id="t-home-title" style="margin-bottom: 15px;">TSL</h2>
+        <p id="t-home-desc" style="color: var(--text-muted); margin-bottom: 25px;">Découvrez votre type de leadership en 16 questions.</p>
+        <button id="t-start-btn" class="btn-nav btn-next" onclick="startTest()">Commencer le test</button>
     </div>
 
     <div id="quiz-card" class="card" style="display: none;">
-        <div class="progress-container"><div id="progress" class="progress-fill"></div></div>
-        <p id="q-number" style="font-size: 0.75rem; color: var(--primary); font-weight: 800; margin-bottom: 10px;"></p>
-        <h2 id="q-text" style="margin-bottom: 30px;"></h2>
+        <div class="progress-bar"><div id="progress" class="progress-fill"></div></div>
+        <h3 id="q-text" style="margin-bottom: 20px;"></h3>
         <div id="options"></div>
-        <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <button id="prev-btn" class="btn-nav" style="background: transparent; color: white; border: 1px solid var(--glass-border);" onclick="changeQuestion(-1)">Retour</button>
-            <button id="next-btn" class="btn-nav btn-next" onclick="changeQuestion(1)" disabled>Suivant</button>
-            <button id="result-btn" class="btn-nav btn-next" onclick="finish()" style="display: none;">Résultats</button>
-        </div>
+        <button id="next-btn" class="btn-nav btn-next" onclick="nextQuestion()" disabled>Suivant</button>
     </div>
 
     <div id="result-card" class="card" style="display: none;">
-        <h1 class="logo">TSL</h1>
-        <p class="sub-logo">Rapport Final</p>
-        <div class="score-big">100%</div>
-        <p id="text-global-lead" style="color: var(--primary); font-size: 0.8rem; font-weight: 800; text-transform: uppercase;">Leadership Global</p>
+        <p id="t-res-label" style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">VOS RÉSULTATS</p>
         
-        <div class="stats-box">
-            <div class="stat-row"><div class="stat-info"><span class="t-social">Social</span><span>80%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill"></div></div></div>
-            <div class="stat-row"><div class="stat-info"><span class="t-vision">Vision</span><span>70%</span></div><div class="stat-bar-bg"><div class="stat-bar-fill"></div></div></div>
+        <div class="result-header">
+            <h1 class="type-title">TSL</h1>
+            <p id="t-res-sub" class="type-subtitle">Analyse de Style</p>
         </div>
 
-        <div class="box-info box-green" id="text-point-fort"><b>✅ POINT FORT</b><br>Communication claire et efficace.</div>
-        <div class="box-info box-orange" id="text-axe-amelio"><b>🚀 AMÉLIORATION</b><br>Prendre plus d'initiatives.</div>
-        
-        <button class="btn-nav btn-next" style="width: 100%;" onclick="location.reload()">Reset</button>
+        <div class="mbti-bar-container">
+            <div class="mbti-label"><span id="t-bar-1">Social</span><span>80%</span></div>
+            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 80%;"></div></div>
+        </div>
+        <div class="mbti-bar-container">
+            <div class="mbti-label"><span id="t-bar-2">Vision</span><span>65%</span></div>
+            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 65%;"></div></div>
+        </div>
+        <div class="mbti-bar-container">
+            <div class="mbti-label"><span id="t-bar-3">Décision</span><span>90%</span></div>
+            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 90%;"></div></div>
+        </div>
+
+        <div id="t-res-desc" class="description-box">
+            <p><b>Résultat Global :</b> Vous avez un profil équilibré avec une forte capacité à prendre des décisions tout en gardant une vision claire des objectifs.</p>
+        </div>
+
+        <button id="t-reset-btn" class="btn-nav" style="background: rgba(255,255,255,0.05); color: white; width: 100%; margin-top: 20px;" onclick="location.reload()">Recommencer</button>
     </div>
 </div>
 
 <script>
-    let currentLang = 'fr';
     let currentIdx = 0;
-    let answers = new Array(16).fill(null);
+    let selectedOpt = null;
+    let currentLang = 'fr';
+    const totalQ = 16;
 
     const uiTexts = {
-        fr: { sub: "Rapport de Leadership", title: "Analyse de Style", desc: "16 situations simples.", start: "Commencer", prev: "Retour", next: "Suivant", res: "Résultats", global: "Leadership Global", social: "Social", vision: "Vision", fort: "<b>✅ POINT FORT</b><br>Communication claire.", axe: "<b>🚀 AMÉLIORATION</b><br>Prendre des initiatives." },
-        ar: { sub: "تقرير القيادة", title: "تحليل الأسلوب", desc: "16 موقفاً بسيطاً.", start: "ابدأ", prev: "رجوع", next: "التالي", res: "النتائج", global: "القيادة العامة", social: "اجتماعي", vision: "رؤية", fort: "<b>✅ نقطة قوة</b><br>تواصل واضح.", axe: "<b>🚀 تحسين</b><br>المبادرة أكثر." },
-        en: { sub: "Leadership Report", title: "Style Analysis", desc: "16 simple situations.", start: "Start", prev: "Back", next: "Next", res: "Results", global: "Global Leadership", social: "Social", vision: "Vision", fort: "<b>✅ STRENGTH</b><br>Clear communication.", axe: "<b>🚀 IMPROVEMENT</b><br>Take initiatives." }
+        fr: { homeT: "Test de Personnalité", homeD: "Découvrez votre type de leadership en 16 questions.", start: "Commencer le test", next: "Suivant", resL: "VOS RÉSULTATS", resS: "Analyse de Style", bar1: "Social", bar2: "Vision", bar3: "Décision", reset: "Recommencer" },
+        en: { homeT: "Personality Test", homeD: "Discover your leadership style in 16 questions.", start: "Start Test", next: "Next", resL: "YOUR RESULTS", resS: "Style Analysis", bar1: "Social", bar2: "Vision", bar3: "Decision", reset: "Restart" },
+        ar: { homeT: "اختبار الشخصية", homeD: "اكتشف أسلوبك في القيادة من خلال 16 سؤالاً.", start: "ابدأ الاختبار", next: "التالي", resL: "نتائجك", resS: "تحليل الأسلوب", bar1: "اجتماعي", bar2: "رؤية", bar3: "قرار", reset: "إعادة الاختبار" }
     };
 
-    const questionsData = [
-        { fr: { q: "Comment donnez-vous des ordres ?", options: ["Directement", "En discutant"] }, ar: { q: "كيف تعطي الأوامر؟", options: ["مباشرة", "بالنقاش"] }, en: { q: "How do you give orders?", options: ["Directly", "By discussing"] } },
-        { fr: { q: "Un problème arrive, vous :", options: ["Décidez seul", "Demandez l'avis"] }, ar: { q: "حدثت مشكلة، أنت:", options: ["تقرر وحدك", "تطلب الرأي"] }, en: { q: "A problem occurs, you:", options: ["Decide alone", "Ask for advice"] } },
-        { fr: { q: "Votre priorité est :", options: ["Le travail fini", "L'ambiance d'équipe"] }, ar: { q: "أولويتك هي:", options: ["إنجاز العمل", "جو الفريق"] }, en: { q: "Your priority is:", options: ["Work finished", "Team atmosphere"] } },
-        { fr: { q: "Pour motiver quelqu'un :", options: ["Vous le contrôlez", "Vous l'encouragez"] }, ar: { q: "لتحفيز شخص ما:", options: ["تراقبه", "تشجعه"] }, en: { q: "To motivate someone:", options: ["You control them", "You encourage them"] } },
-        { fr: { q: "Réunion d'équipe :", options: ["Vous parlez", "Vous écoutez"] }, ar: { q: "اجتماع الفريق:", options: ["تتحدث", "تستمع"] }, en: { q: "Team meeting:", options: ["You speak", "You listen"] } },
-        { fr: { q: "Erreur d'un employé :", options: ["Sanctionner", "Expliquer"] }, ar: { q: "خطأ موظف:", options: ["عقوبة", "شرح"] }, en: { q: "Employee error:", options: ["Sanction", "Explain"] } },
-        { fr: { q: "Changement de plan :", options: ["L'imposer", "En parler avant"] }, ar: { q: "تغيير الخطة:", options: ["فرضها", "التحدث عنها"] }, en: { q: "Plan change:", options: ["Impose it", "Talk about it"] } },
-        { fr: { q: "Nouveau projet :", options: ["Tout vérifier", "Faire confiance"] }, ar: { q: "مشروع جديد:", options: ["فحص كل شيء", "الثقة"] }, en: { q: "New project:", options: ["Check everything", "Trust"] } },
-        { fr: { q: "Les objectifs :", options: ["Fixes et clairs", "Souples"] }, ar: { q: "الأهداف:", options: ["ثابتة وواضحة", "مرنة"] }, en: { q: "The goals:", options: ["Fixed and clear", "Flexible"] } },
-        { fr: { q: "Le leader idéal :", options: ["Un chef", "Un guide"] }, ar: { q: "القائد المثالي:", options: ["رئيس", "مرشد"] }, en: { q: "Ideal leader:", options: ["A boss", "A guide"] } },
-        { fr: { q: "Conflit entre deux personnes :", options: ["Trancher", "Médiation"] }, ar: { q: "صراع بين شخصين:", options: ["الحسم", "الوساطة"] }, en: { q: "Conflict between two:", options: ["Settle it", "Mediation"] } },
-        { fr: { q: "Feedback (avis) :", options: ["Direct", "Constructif"] }, ar: { q: "ملاحظات:", options: ["مباشرة", "بناءة"] }, en: { q: "Feedback:", options: ["Direct", "Constructive"] } },
-        { fr: { q: "Déléguer :", options: ["C'est dur", "C'est utile"] }, ar: { q: "التفويض:", options: ["صعب", "مفيد"] }, en: { q: "Delegating:", options: ["It's hard", "It's useful"] } },
-        { fr: { q: "Innovation :", options: ["Risqué", "Nécessaire"] }, ar: { q: "الابتكار:", options: ["خطر", "ضروري"] }, en: { q: "Innovation:", options: ["Risky", "Necessary"] } },
-        { fr: { q: "La discipline :", options: ["Sévère", "Juste"] }, ar: { q: "الانضباط:", options: ["صارم", "عادل"] }, en: { q: "Discipline:", options: ["Severe", "Fair"] } },
-        { fr: { q: "L'équipe :", options: ["Des exécutants", "Des partenaires"] }, ar: { q: "الفريق:", options: ["منفذون", "شركاء"] }, en: { q: "The team:", options: ["Executors", "Partners"] } }
+    const questions = [
+        { fr: "Comment gérez-vous une urgence ?", ar: "كيف تتعامل مع حالة طوارئ؟", en: "How do you handle an emergency?", opts: { fr: ["Je décide immédiatement", "Je consulte l'équipe"], ar: ["أقرر فوراً", "أستشير الفريق"], en: ["I decide immediately", "I consult the team"] } },
+        { fr: "Votre priorité au travail ?", ar: "أولويتك في العمل؟", en: "Your priority at work?", opts: { fr: ["Atteindre les objectifs", "Maintenir l'ambiance"], ar: ["تحقيق الأهداف", "الحفاظ على الجو العام"], en: ["Achieving goals", "Maintaining atmosphere"] } },
+        { fr: "En réunion, vous préférez :", ar: "في الاجتماعات، تفضل:", en: "In meetings, you prefer:", opts: { fr: ["Donner des directives", "Écouter les avis"], ar: ["إعطاء التوجيهات", "الاستماع للآراء"], en: ["Give directions", "Listen to opinions"] } },
+        { fr: "Pour motiver quelqu'un :", ar: "لتحفيز شخص ما:", en: "To motivate someone:", opts: { fr: ["Fixer des défis", "Offrir du soutien"], ar: ["تحديد تحديات", "تقديم الدعم"], en: ["Set challenges", "Offer support"] } },
+        { fr: "Face à une erreur :", ar: "عند وقوع خطأ:", en: "Faced with an error:", opts: { fr: ["Chercher le coupable", "Chercher la solution"], ar: ["البحث عن المخطئ", "البحث عن حل"], en: ["Find the culprit", "Find the solution"] } },
+        { fr: "Vous déléguez une tâche :", ar: "عند تفويض مهمة:", en: "When delegating a task:", opts: { fr: ["En contrôlant tout", "En faisant confiance"], ar: ["بمراقبة كل شيء", "بوضع الثقة"], en: ["By controlling everything", "By trusting"] } },
+        { fr: "Le changement est :", ar: "التغيير بالنسبة لك:", en: "Change is:", opts: { fr: ["Une opportunité", "Un risque"], ar: ["فرصة", "خطر"], en: ["An opportunity", "A risk"] } },
+        { fr: "Le climat idéal :", ar: "الجو المثالي:", en: "The ideal climate:", opts: { fr: ["Compétition saine", "Collaboration totale"], ar: ["تنافس شريف", "تعاون كامل"], en: ["Healthy competition", "Total collaboration"] } },
+        { fr: "Vous préférez :", ar: "تفضل:", en: "You prefer:", opts: { fr: ["Planifier à l'avance", "S'adapter au moment"], ar: ["التخطيط مسبقاً", "التكيف مع اللحظة"], en: ["Plan in advance", "Adapt to the moment"] } },
+        { fr: "Une critique est :", ar: "الانتقاد بالنسبة لك:", en: "A criticism is:", opts: { fr: ["Un outil de progrès", "Une attaque"], ar: ["أداة للتقدم", "هجوم شخصي"], en: ["A tool for progress", "An attack"] } },
+        { fr: "Les règles sont :", ar: "القواعد بالنسبة لك:", en: "Rules are:", opts: { fr: ["Indispensables", "Flexibles"], ar: ["ضرورية جداً", "مرنة"], en: ["Essential", "Flexible"] } },
+        { fr: "Succès d'un projet :", ar: "نجاح المشروع يعود لـ:", en: "Project success is due to:", opts: { fr: ["Le travail acharné", "L'esprit d'équipe"], ar: ["العمل الجاد", "روح الفريق"], en: ["Hard work", "Team spirit"] } },
+        { fr: "Innovation :", ar: "الابتكار:", en: "Innovation:", opts: { fr: ["Explorer le nouveau", "Améliorer l'existant"], ar: ["استكشاف الجديد", "تحسين الموجود"], en: ["Explore the new", "Improve the existing"] } },
+        { fr: "Communication :", ar: "التواصل:", en: "Communication:", opts: { fr: ["Directe et brève", "Détaillée et ouverte"], ar: ["مباشر ومختصر", "مفصل ومفتوح"], en: ["Direct and brief", "Detailed and open"] } },
+        { fr: "Stress :", ar: "الضغط:", en: "Stress:", opts: { fr: ["Me rend productif", "Me ralentit"], ar: ["يجعلني منتجاً", "يبطئ حركتي"], en: ["Makes me productive", "Slows me down"] } },
+        { fr: "Le leader est :", ar: "القائد هو:", en: "The leader is:", opts: { fr: ["Un modèle à suivre", "Un facilitateur"], ar: ["قدوة تتبع", "ميسر للأمور"], en: ["A role model", "A facilitator"] } }
     ];
 
     function changeLang(lang) {
         currentLang = lang;
-        const cont = document.getElementById('main-container');
-        if(lang === 'ar') cont.classList.add('rtl'); else cont.classList.remove('rtl');
-        document.getElementById('text-sub-logo').innerText = uiTexts[lang].sub;
-        document.getElementById('text-home-title').innerText = uiTexts[lang].title;
-        document.getElementById('text-home-desc').innerText = uiTexts[lang].desc;
-        document.getElementById('text-start-btn').innerText = uiTexts[lang].start;
-        if(document.getElementById('quiz-card').style.display === 'block') render();
+        const main = document.getElementById('main-container');
+        if (lang === 'ar') main.classList.add('rtl'); else main.classList.remove('rtl');
+        
+        document.getElementById('t-home-title').innerText = uiTexts[lang].homeT;
+        document.getElementById('t-home-desc').innerText = uiTexts[lang].homeD;
+        document.getElementById('t-start-btn').innerText = uiTexts[lang].start;
+        document.getElementById('next-btn').innerText = uiTexts[lang].next;
+        document.getElementById('t-res-label').innerText = uiTexts[lang].resL;
+        document.getElementById('t-res-sub').innerText = uiTexts[lang].resS;
+        document.getElementById('t-bar-1').innerText = uiTexts[lang].bar1;
+        document.getElementById('t-bar-2').innerText = uiTexts[lang].bar2;
+        document.getElementById('t-bar-3').innerText = uiTexts[lang].bar3;
+        document.getElementById('t-reset-btn').innerText = uiTexts[lang].reset;
+        
+        if (document.getElementById('quiz-card').style.display === 'block') render();
     }
 
     function startTest() {
@@ -186,32 +214,38 @@
     }
 
     function render() {
-        const qData = questionsData[currentIdx][currentLang];
-        document.getElementById('q-number').innerText = (currentLang === 'ar' ? 'السؤال' : 'QUESTION') + ` ${currentIdx + 1} / 16`;
-        document.getElementById('q-text').innerText = qData.q;
+        const q = questions[currentIdx];
+        document.getElementById('q-text').innerText = q[currentLang];
         const optContainer = document.getElementById('options');
         optContainer.innerHTML = '';
-        qData.options.forEach((opt, i) => {
+        
+        q.opts[currentLang].forEach((o, i) => {
             const btn = document.createElement('button');
-            btn.className = `option-btn ${answers[currentIdx] === i ? 'selected' : ''}`;
-            btn.innerText = opt;
-            btn.onclick = () => { answers[currentIdx] = i; render(); };
+            btn.className = `option-btn ${selectedOpt === i ? 'selected' : ''}`;
+            btn.innerText = o;
+            btn.onclick = () => { selectedOpt = i; document.getElementById('next-btn').disabled = false; render(); };
             optContainer.appendChild(btn);
         });
-        document.getElementById('progress').style.width = ((currentIdx + 1) / 16 * 100) + '%';
-        const isLast = currentIdx === 15;
-        document.getElementById('next-btn').style.display = isLast ? 'none' : 'inline-block';
-        document.getElementById('result-btn').style.display = isLast ? 'inline-block' : 'none';
-        document.getElementById('next-btn').disabled = answers[currentIdx] === null;
-        document.getElementById('next-btn').innerText = uiTexts[currentLang].next;
-        document.getElementById('result-btn').innerText = uiTexts[currentLang].res;
+
+        document.getElementById('progress').style.width = ((currentIdx + 1) / totalQ * 100) + '%';
     }
 
-    function changeQuestion(dir) { currentIdx += dir; render(); }
-    function finish() {
+    function nextQuestion() {
+        if (currentIdx < totalQ - 1) {
+            currentIdx++;
+            selectedOpt = null;
+            document.getElementById('next-btn').disabled = true;
+            render();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
         document.getElementById('quiz-card').style.display = 'none';
         document.getElementById('result-card').style.display = 'block';
     }
 </script>
+
 </body>
 </html>
