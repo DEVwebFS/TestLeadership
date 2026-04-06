@@ -28,7 +28,6 @@
             position: relative;
         }
 
-        /* --- Language Switcher --- */
         .lang-switcher {
             position: absolute; top: 20px; right: 20px;
             background: rgba(255, 255, 255, 0.05);
@@ -49,7 +48,6 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
-        /* --- Style Resultats Violet --- */
         .result-header {
             background: var(--primary);
             padding: 25px;
@@ -62,8 +60,8 @@
 
         .mbti-bar-container { margin: 12px 0; text-align: left; }
         .mbti-label { display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px; font-weight: 600; }
-        .mbti-bar-bg { background: rgba(255, 255, 255, 0.1); height: 8px; border-radius: 10px; overflow: hidden; }
-        .mbti-bar-fill { background: #a78bfa; height: 100%; transition: 1s ease-out; }
+        .mbti-bar-bg { background: rgba(255, 255, 255, 0.1); height: 10px; border-radius: 10px; overflow: hidden; }
+        .mbti-bar-fill { background: #a78bfa; height: 100%; width: 0%; transition: 1.5s ease-in-out; }
 
         .description-box {
             background: rgba(255, 255, 255, 0.03);
@@ -76,7 +74,6 @@
             border: 1px solid var(--glass-border);
         }
 
-        /* --- Buttons & UI --- */
         .option-btn {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
@@ -89,6 +86,7 @@
             color: white;
             transition: 0.2s;
         }
+        .option-btn:hover { background: rgba(255, 255, 255, 0.08); }
         .option-btn.selected { background: var(--primary); border-color: var(--primary); }
 
         .btn-nav { 
@@ -96,6 +94,7 @@
             border: none; text-transform: uppercase; transition: 0.3s;
         }
         .btn-next { background: var(--primary); color: white; width: 100%; margin-top: 10px; }
+        .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
         
         .progress-bar { background: rgba(255,255,255,0.05); height: 6px; border-radius: 10px; margin-bottom: 20px; }
         .progress-fill { background: var(--primary); height: 100%; width: 0%; border-radius: 10px; transition: 0.3s; }
@@ -103,7 +102,6 @@
         .rtl { direction: rtl; text-align: right; }
         .rtl .option-btn { text-align: right; }
         .rtl .mbti-bar-container { text-align: right; }
-
     </style>
 </head>
 <body>
@@ -132,25 +130,25 @@
         <p id="t-res-label" style="font-size: 0.8rem; font-weight: 600; color: var(--primary);">VOS RÉSULTATS</p>
         
         <div class="result-header">
-            <h1 class="type-title">TSL</h1>
-            <p id="t-res-sub" class="type-subtitle">Analyse de Style</p>
+            <h1 class="type-title" id="final-score-title">0%</h1>
+            <p id="t-res-sub" class="type-subtitle">Score de Leadership Global</p>
         </div>
 
         <div class="mbti-bar-container">
-            <div class="mbti-label"><span id="t-bar-1">Social</span><span>80%</span></div>
-            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 80%;"></div></div>
+            <div class="mbti-label"><span id="t-bar-1">Social</span><span id="p-social">0%</span></div>
+            <div class="mbti-bar-bg"><div id="fill-social" class="mbti-bar-fill"></div></div>
         </div>
         <div class="mbti-bar-container">
-            <div class="mbti-label"><span id="t-bar-2">Vision</span><span>65%</span></div>
-            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 65%;"></div></div>
+            <div class="mbti-label"><span id="t-bar-2">Vision</span><span id="p-vision">0%</span></div>
+            <div class="mbti-bar-bg"><div id="fill-vision" class="mbti-bar-fill"></div></div>
         </div>
         <div class="mbti-bar-container">
-            <div class="mbti-label"><span id="t-bar-3">Décision</span><span>90%</span></div>
-            <div class="mbti-bar-bg"><div class="mbti-bar-fill" style="width: 90%;"></div></div>
+            <div class="mbti-label"><span id="t-bar-3">Décision</span><span id="p-decision">0%</span></div>
+            <div class="mbti-bar-bg"><div id="fill-decision" class="mbti-bar-fill"></div></div>
         </div>
 
         <div id="t-res-desc" class="description-box">
-            <p><b>Résultat Global :</b> Vous avez un profil équilibré avec une forte capacité à prendre des décisions tout en gardant une vision claire des objectifs.</p>
+            <p id="dynamic-desc"></p>
         </div>
 
         <button id="t-reset-btn" class="btn-nav" style="background: rgba(255,255,255,0.05); color: white; width: 100%; margin-top: 20px;" onclick="location.reload()">Recommencer</button>
@@ -162,30 +160,33 @@
     let selectedOpt = null;
     let currentLang = 'fr';
     const totalQ = 16;
+    
+    // Variables pour le calcul
+    let points = { social: 0, vision: 0, decision: 0 };
 
     const uiTexts = {
-        fr: { homeT: "Test de Personnalité", homeD: "Découvrez votre type de leadership en 16 questions.", start: "Commencer le test", next: "Suivant", resL: "VOS RÉSULTATS", resS: "Analyse de Style", bar1: "Social", bar2: "Vision", bar3: "Décision", reset: "Recommencer" },
-        en: { homeT: "Personality Test", homeD: "Discover your leadership style in 16 questions.", start: "Start Test", next: "Next", resL: "YOUR RESULTS", resS: "Style Analysis", bar1: "Social", bar2: "Vision", bar3: "Decision", reset: "Restart" },
-        ar: { homeT: "اختبار الشخصية", homeD: "اكتشف أسلوبك في القيادة من خلال 16 سؤالاً.", start: "ابدأ الاختبار", next: "التالي", resL: "نتائجك", resS: "تحليل الأسلوب", bar1: "اجتماعي", bar2: "رؤية", bar3: "قرار", reset: "إعادة الاختبار" }
+        fr: { homeT: "Test de Personnalité", homeD: "Découvrez votre type de leadership en 16 questions.", start: "Commencer le test", next: "Suivant", resL: "VOS RÉSULTATS", resS: "Score de Leadership Global", bar1: "Social / Humain", bar2: "Vision / Stratégie", bar3: "Décision / Action", reset: "Recommencer" },
+        en: { homeT: "Personality Test", homeD: "Discover your leadership style in 16 questions.", start: "Start Test", next: "Next", resL: "YOUR RESULTS", resS: "Global Leadership Score", bar1: "Social / Human", bar2: "Vision / Strategy", bar3: "Decision / Action", reset: "Restart" },
+        ar: { homeT: "اختبار الشخصية", homeD: "اكتشف أسلوبك في القيادة من خلال 16 سؤالاً.", start: "ابدأ الاختبار", next: "التالي", resL: "نتائجك", resS: "الدرجة القيادية العامة", bar1: "اجتماعي / إنساني", bar2: "رؤية / استراتيجية", bar3: "قرار / تنفيذ", reset: "إعادة الاختبار" }
     };
 
     const questions = [
-        { fr: "Comment gérez-vous une urgence ?", ar: "كيف تتعامل مع حالة طوارئ؟", en: "How do you handle an emergency?", opts: { fr: ["Je décide immédiatement", "Je consulte l'équipe"], ar: ["أقرر فوراً", "أستشير الفريق"], en: ["I decide immediately", "I consult the team"] } },
-        { fr: "Votre priorité au travail ?", ar: "أولويتك في العمل؟", en: "Your priority at work?", opts: { fr: ["Atteindre les objectifs", "Maintenir l'ambiance"], ar: ["تحقيق الأهداف", "الحفاظ على الجو العام"], en: ["Achieving goals", "Maintaining atmosphere"] } },
-        { fr: "En réunion, vous préférez :", ar: "في الاجتماعات، تفضل:", en: "In meetings, you prefer:", opts: { fr: ["Donner des directives", "Écouter les avis"], ar: ["إعطاء التوجيهات", "الاستماع للآراء"], en: ["Give directions", "Listen to opinions"] } },
-        { fr: "Pour motiver quelqu'un :", ar: "لتحفيز شخص ما:", en: "To motivate someone:", opts: { fr: ["Fixer des défis", "Offrir du soutien"], ar: ["تحديد تحديات", "تقديم الدعم"], en: ["Set challenges", "Offer support"] } },
-        { fr: "Face à une erreur :", ar: "عند وقوع خطأ:", en: "Faced with an error:", opts: { fr: ["Chercher le coupable", "Chercher la solution"], ar: ["البحث عن المخطئ", "البحث عن حل"], en: ["Find the culprit", "Find the solution"] } },
-        { fr: "Vous déléguez une tâche :", ar: "عند تفويض مهمة:", en: "When delegating a task:", opts: { fr: ["En contrôlant tout", "En faisant confiance"], ar: ["بمراقبة كل شيء", "بوضع الثقة"], en: ["By controlling everything", "By trusting"] } },
-        { fr: "Le changement est :", ar: "التغيير بالنسبة لك:", en: "Change is:", opts: { fr: ["Une opportunité", "Un risque"], ar: ["فرصة", "خطر"], en: ["An opportunity", "A risk"] } },
-        { fr: "Le climat idéal :", ar: "الجو المثالي:", en: "The ideal climate:", opts: { fr: ["Compétition saine", "Collaboration totale"], ar: ["تنافس شريف", "تعاون كامل"], en: ["Healthy competition", "Total collaboration"] } },
-        { fr: "Vous préférez :", ar: "تفضل:", en: "You prefer:", opts: { fr: ["Planifier à l'avance", "S'adapter au moment"], ar: ["التخطيط مسبقاً", "التكيف مع اللحظة"], en: ["Plan in advance", "Adapt to the moment"] } },
-        { fr: "Une critique est :", ar: "الانتقاد بالنسبة لك:", en: "A criticism is:", opts: { fr: ["Un outil de progrès", "Une attaque"], ar: ["أداة للتقدم", "هجوم شخصي"], en: ["A tool for progress", "An attack"] } },
-        { fr: "Les règles sont :", ar: "القواعد بالنسبة لك:", en: "Rules are:", opts: { fr: ["Indispensables", "Flexibles"], ar: ["ضرورية جداً", "مرنة"], en: ["Essential", "Flexible"] } },
-        { fr: "Succès d'un projet :", ar: "نجاح المشروع يعود لـ:", en: "Project success is due to:", opts: { fr: ["Le travail acharné", "L'esprit d'équipe"], ar: ["العمل الجاد", "روح الفريق"], en: ["Hard work", "Team spirit"] } },
-        { fr: "Innovation :", ar: "الابتكار:", en: "Innovation:", opts: { fr: ["Explorer le nouveau", "Améliorer l'existant"], ar: ["استكشاف الجديد", "تحسين الموجود"], en: ["Explore the new", "Improve the existing"] } },
-        { fr: "Communication :", ar: "التواصل:", en: "Communication:", opts: { fr: ["Directe et brève", "Détaillée et ouverte"], ar: ["مباشر ومختصر", "مفصل ومفتوح"], en: ["Direct and brief", "Detailed and open"] } },
-        { fr: "Stress :", ar: "الضغط:", en: "Stress:", opts: { fr: ["Me rend productif", "Me ralentit"], ar: ["يجعلني منتجاً", "يبطئ حركتي"], en: ["Makes me productive", "Slows me down"] } },
-        { fr: "Le leader est :", ar: "القائد هو:", en: "The leader is:", opts: { fr: ["Un modèle à suivre", "Un facilitateur"], ar: ["قدوة تتبع", "ميسر للأمور"], en: ["A role model", "A facilitator"] } }
+        { cat: 'decision', fr: "Comment gérez-vous une urgence ?", ar: "كيف تتعامل مع حالة طوارئ؟", en: "How do you handle an emergency?", opts: { fr: ["Je décide immédiatement", "Je consulte l'équipe"], ar: ["أقرر فوراً", "أستشير الفريق"], en: ["I decide immediately", "I consult the team"] } },
+        { cat: 'vision', fr: "Votre priorité au travail ?", ar: "أولويتك في العمل؟", en: "Your priority at work?", opts: { fr: ["Atteindre les objectifs", "Maintenir l'ambiance"], ar: ["تحقيق الأهداف", "الحفاظ على الجو العام"], en: ["Achieving goals", "Maintaining atmosphere"] } },
+        { cat: 'social', fr: "En réunion, vous préférez :", ar: "في الاجتماعات، تفضل:", en: "In meetings, you prefer:", opts: { fr: ["Écouter les avis", "Donner des directives"], ar: ["الاستماع للآراء", "إعطاء التوجيهات"], en: ["Listen to opinions", "Give directions"] } },
+        { cat: 'social', fr: "Pour motiver quelqu'un :", ar: "لتحفيز شخص ما:", en: "To motivate someone:", opts: { fr: ["Offrir du soutien", "Fixer des défis"], ar: ["تقديم الدعم", "تحديد تحديات"], en: ["Offer support", "Set challenges"] } },
+        { cat: 'decision', fr: "Face à une erreur :", ar: "عند وقوع خطأ:", en: "Faced with an error:", opts: { fr: ["Chercher la solution", "Chercher le coupable"], ar: ["البحث عن حل", "البحث عن المخطئ"], en: ["Find the solution", "Find the culprit"] } },
+        { cat: 'social', fr: "Vous déléguez une tâche :", ar: "عند تفويض مهمة:", en: "When delegating a task:", opts: { fr: ["En faisant confiance", "En contrôlant tout"], ar: ["بوضع الثقة", "بمراقبة كل شيء"], en: ["By trusting", "By controlling everything"] } },
+        { cat: 'vision', fr: "Le changement est :", ar: "التغيير بالنسبة لك:", en: "Change is:", opts: { fr: ["Une opportunité", "Un risque"], ar: ["فرصة", "خطر"], en: ["An opportunity", "A risk"] } },
+        { cat: 'social', fr: "Le climat idéal :", ar: "الجو المثالي:", en: "The ideal climate:", opts: { fr: ["Collaboration totale", "Compétition saine"], ar: ["تعاون كامل", "تنافس شريف"], en: ["Total collaboration", "Healthy competition"] } },
+        { cat: 'vision', fr: "Vous préférez :", ar: "تفضل:", en: "You prefer:", opts: { fr: ["Planifier à l'avance", "S'adapter au moment"], ar: ["التخطيط مسبقاً", "التكيف مع اللحظة"], en: ["Plan in advance", "Adapt to the moment"] } },
+        { cat: 'social', fr: "Une critique est :", ar: "الانتقاد بالنسبة لك:", en: "A criticism is:", opts: { fr: ["Un outil de progrès", "Une attaque"], ar: ["أداة للتقدم", "هجوم شخصي"], en: ["A tool for progress", "An attack"] } },
+        { cat: 'decision', fr: "Les règles sont :", ar: "القواعد بالنسبة لك:", en: "Rules are:", opts: { fr: ["Indispensables", "Flexibles"], ar: ["ضرورية جداً", "مرنة"], en: ["Essential", "Flexible"] } },
+        { cat: 'social', fr: "Succès d'un projet :", ar: "نجاح المشروع يعود لـ:", en: "Project success is due to:", opts: { fr: ["L'esprit d'équipe", "Le travail acharné"], ar: ["روح الفريق", "العمل الجاد"], en: ["Team spirit", "Hard work"] } },
+        { cat: 'vision', fr: "Innovation :", ar: "الابتكار:", en: "Innovation:", opts: { fr: ["Explorer le nouveau", "Améliorer l'existant"], ar: ["استكشاف الجديد", "تحسين الموجود"], en: ["Explore the new", "Improve the existing"] } },
+        { cat: 'decision', fr: "Communication :", ar: "التواصل:", en: "Communication:", opts: { fr: ["Directe et brève", "Détaillée et ouverte"], ar: ["مباشر ومختصر", "مفصل ومفتوح"], en: ["Direct and brief", "Detailed and open"] } },
+        { cat: 'vision', fr: "Stress :", ar: "الضغط:", en: "Stress:", opts: { fr: ["Me rend productif", "Me ralentit"], ar: ["يجعلني منتجاً", "يبطئ حركتي"], en: ["Makes me productive", "Slows me down"] } },
+        { cat: 'decision', fr: "Le leader est :", ar: "القائد هو:", en: "The leader is:", opts: { fr: ["Un facilitateur", "Un modèle à suivre"], ar: ["ميسر للأمور", "قدوة تتبع"], en: ["A facilitator", "A role model"] } }
     ];
 
     function changeLang(lang) {
@@ -231,6 +232,10 @@
     }
 
     function nextQuestion() {
+        // Logique de calcul simple
+        const q = questions[currentIdx];
+        if (selectedOpt === 0) points[q.cat]++;
+
         if (currentIdx < totalQ - 1) {
             currentIdx++;
             selectedOpt = null;
@@ -244,6 +249,32 @@
     function showResults() {
         document.getElementById('quiz-card').style.display = 'none';
         document.getElementById('result-card').style.display = 'block';
+
+        // Calcul des pourcentages (approximatif basé sur les catégories)
+        const pSocial = Math.round((points.social / 6) * 100);
+        const pVision = Math.round((points.vision / 5) * 100);
+        const pDecision = Math.round((points.decision / 5) * 100);
+        const globalScore = Math.round((pSocial + pVision + pDecision) / 3);
+
+        // Affichage fluide
+        setTimeout(() => {
+            document.getElementById('p-social').innerText = pSocial + '%';
+            document.getElementById('fill-social').style.width = pSocial + '%';
+
+            document.getElementById('p-vision').innerText = pVision + '%';
+            document.getElementById('fill-vision').style.width = pVision + '%';
+
+            document.getElementById('p-decision').innerText = pDecision + '%';
+            document.getElementById('fill-decision').style.width = pDecision + '%';
+
+            document.getElementById('final-score-title').innerText = globalScore + '%';
+        }, 100);
+
+        // Description dynamique
+        const descBox = document.getElementById('dynamic-desc');
+        if(globalScore > 75) descBox.innerHTML = "<b>Leadership Visionnaire :</b> Vous inspirez confiance et savez diriger avec une vision claire.";
+        else if(globalScore > 45) descBox.innerHTML = "<b>Leadership Collaboratif :</b> Vous privilégiez l'humain tout en gardant les objectifs en vue.";
+        else descBox.innerHTML = "<b>Leadership en Devenir :</b> Vous avez un bon sens de l'écoute, travaillez sur la prise de décision rapide.";
     }
 </script>
 
